@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"GOBALS",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"GOBALS",
+  "parent":{
+    "name":"gml-paint",
+    "path":"gml-paint.yyp",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}
