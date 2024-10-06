@@ -1,12 +1,16 @@
 /// @description initial values
 
+//window_set_cursor(cr_none);
+
 x1 = 0
 y1 = 0
 
 x2 = 0
 y2 = 0
 
-draw_list = []
 is_drawing = false
 
-canvas_init()
+draw_arr = [ surface_create(CW,CH) ];
+redo = [];
+
+canvas_init();

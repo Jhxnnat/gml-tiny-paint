@@ -1,0 +1,30 @@
+## The Todo Notes
+
+### Redo - Undo System
+	- [ ] Undo
+	- [ ] Redo
+
+### Canvas
+	- [ ] Zoom in-out
+	- [ ] Draw pos when zoom (fix)
+
+### Tools
+	- [ ] Brush width
+	- [ ] Color
+	- [ ] Selection Tool
+	- [ ] Hand
+	- [ ] Copy/paste Selection
+	- [ ] Move/Scale/Rotate selection
+
+### Drawing
+	- [ ] Rectangle
+	- [ ] Line
+	- [ ] Circle
+	- [ ] Spread
+
+	- [ ] Selection + Move
+
+### Layout 
+	- [ ] Tools 
+	- [ ] Colors
+	- [ ] Status Bar

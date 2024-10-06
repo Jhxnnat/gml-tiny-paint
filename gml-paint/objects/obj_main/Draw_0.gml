@@ -1,25 +1,31 @@
 /// @description Draw the GUI && canvas
 
-if(surface_exists(global.surf_canvas)){
+if (is_drawing && surface_exists(global.surf_canvas)) {
 	
-	//setting stuff on canvas
+	x2 = mouse_x; y2 = mouse_y;
+	
 	surface_set_target(global.surf_canvas)
+	draw_set_color(global.cv_color)
 	
-	draw_set_color(global.cv_color);
+	//draw_circle(x1,y1,10,false)
+	cv_draw_line(x1,y1,x2,y2,global.cv_pencil_width,global.cv_color);
 	
-	var _l = draw_list;
-	var _len = array_length(_l);
-	for(var _i=0; _i<_len; _i++){
-		var _x1 = _l[_i][0],
-			_y1 = _l[_i][1],
-			_x2 = _l[_i][2],
-			_y2 = _l[_i][3];
-		
-		draw_line_width(_x1,_y1,_x2,_y2,global.cv_pencil_width);
-	}
-	
+	draw_set_color(c_white)
 	surface_reset_target()
 	
-	//final canvas drawing
-	draw_surface(global.surf_canvas,20,20)
+	//surface_copy(global.surf_canvas, 0, 0, global.surf_draw)	
+	
+	x1 = x2;
+	y1 = y2;
+	
 }
+
+if(surface_exists(global.surf_canvas)){
+	draw_surface_ext(global.surf_canvas,0,0, global.cv_zoom, global.cv_zoom, 0, c_white, 1);
+}
+
+//draw_circle_color(mouse_x,mouse_y,10,c_red,c_red,true);
+
+draw_set_color(c_black);
+draw_text(10, 10, $"fps: {fps_real}");
+draw_set_color(c_white);
