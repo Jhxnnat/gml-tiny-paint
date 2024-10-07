@@ -10,6 +10,7 @@
   },
   "defaultScriptType":1,
   "Folders":[
+    {"$GMFolder":"","%Name":"cursors","folderPath":"folders/cursors.yy","name":"cursors","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"Rooms","folderPath":"folders/Rooms.yy","name":"Rooms","resourceType":"GMFolder","resourceVersion":"2.0",},
   ],
   "IncludedFiles":[],
@@ -20,10 +21,12 @@
   },
   "name":"gml-paint",
   "resources":[
+    {"id":{"name":"fnt_main","path":"fonts/fnt_main/fnt_main.yy",},},
     {"id":{"name":"Notes","path":"notes/Notes/Notes.yy",},},
     {"id":{"name":"obj_main","path":"objects/obj_main/obj_main.yy",},},
     {"id":{"name":"rm_main","path":"rooms/rm_main/rm_main.yy",},},
     {"id":{"name":"GOBALS","path":"scripts/GOBALS/GOBALS.yy",},},
+    {"id":{"name":"spr_bg_base","path":"sprites/spr_bg_base/spr_bg_base.yy",},},
   ],
   "resourceType":"GMProject",
   "resourceVersion":"2.0",

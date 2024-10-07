@@ -24,7 +24,14 @@ function canvas_init(){
 
 //#region tools
 
-global.cv_color = c_black;
+enum TOOL {
+	HAND,
+	PENCIL,
+	FILL 
+}
+global.selected_tool = TOOL.FILL;
+
+global.cv_color = c_orange;
 global.cv_pencil_width = 10;
 global.cv_zoom = 1;
 
@@ -106,6 +113,30 @@ function cv_draw_line_v(x1,y1,x2,y2,width=10,color=c_red) {
 	}
 }
 
+
+function cv_fill(_x,_y,color=c_red) {
+	var _prev_color = surface_getpixel(global.surf_canvas,_x,_y);
+	if (_prev_color = color) return;
+	
+	surface_set_target(global.surf_canvas)
+	draw_set_color(color)
+	__dfs(_x,_y,_prev_color,color)
+	surface_reset_target()
+	draw_set_color(c_white)
+}
+function __dfs(_x,_y,_prev_color,_new_color) {
+	if (surface_getpixel(global.surf_canvas,_x,_y) != _prev_color) return;
+	
+	draw_point(_x,_y)
+	
+	var _n = CW;
+	var _m = CH;
+	
+	if (_x - 1 >= 0) __dfs(_x-1,_y,_prev_color,_new_color);
+	if (_y + 1 < _m) __dfs(_x,_y+1,_prev_color,_new_color);
+	if (_x + 1 < _n) __dfs(_x+1,_y,_prev_color,_new_color);
+	if (_y - 1 >= 0) __dfs(_x,_y-1,_prev_color,_new_color);
+}
 
 ////Utis
 
