@@ -11,6 +11,7 @@
   "defaultScriptType":1,
   "Folders":[
     {"$GMFolder":"","%Name":"cursors","folderPath":"folders/cursors.yy","name":"cursors","resourceType":"GMFolder","resourceVersion":"2.0",},
+    {"$GMFolder":"","%Name":"icons","folderPath":"folders/icons.yy","name":"icons","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"Rooms","folderPath":"folders/Rooms.yy","name":"Rooms","resourceType":"GMFolder","resourceVersion":"2.0",},
   ],
   "IncludedFiles":[],
@@ -27,6 +28,8 @@
     {"id":{"name":"rm_main","path":"rooms/rm_main/rm_main.yy",},},
     {"id":{"name":"GOBALS","path":"scripts/GOBALS/GOBALS.yy",},},
     {"id":{"name":"spr_bg_base","path":"sprites/spr_bg_base/spr_bg_base.yy",},},
+    {"id":{"name":"spr_line","path":"sprites/spr_line/spr_line.yy",},},
+    {"id":{"name":"spr_pencil","path":"sprites/spr_pencil/spr_pencil.yy",},},
   ],
   "resourceType":"GMProject",
   "resourceVersion":"2.0",
