@@ -1,4 +1,7 @@
-/// @description get track of mouse
+/// @description 
+
+MX = (window_mouse_get_x()/window_get_width()) * display_get_gui_width();
+MY = (window_mouse_get_y()/window_get_height()) * display_get_gui_height();
 
 if (keyboard_check(vk_control)) {
 	if (keyboard_check_pressed(ord("Z"))) {
@@ -34,5 +37,15 @@ switch (keyboard_lastkey) {
 	case ord("F"):
 		global.selected_tool = TOOL.FILL
 		break;
+	
+	case ord("A"):
+		reset_canvas_pos()
+		break;
 }
 keyboard_lastkey = -1
+
+var _guimx = window_mouse_get_x()
+var _guimy = window_mouse_get_y()
+if (mouse_check_button_pressed(mb_left) and point_in_rectangle(_guimx, _guimy, ui_coord[0]*2, ui_coord[1]*2, ui_coord[2]*2, ui_coord[3]*2)) {
+	clicked_ui = true
+}

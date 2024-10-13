@@ -36,3 +36,6 @@ guih = display_get_gui_height()
 ui_w = 16*4
 ui_h = guih
 ui_coord = [guiw-ui_w, 0, guiw, ui_h]
+clicked_ui = false
+cursor = spr_arrow_cur
+window_set_cursor(cr_none)

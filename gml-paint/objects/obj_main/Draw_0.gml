@@ -1,4 +1,23 @@
-/// @description Draw the GUI && canvas
+/// @description Draw the canvas
+
+if(surface_exists(global.surf_canvas)){
+	draw_set_alpha(1)
+	draw_set_color(c_white)
+	draw_surface_ext(global.surf_canvas,0,0, 1, 1, 0, c_white, 1)
+	
+	if (is_drawing_line) {
+		cv_draw_line(line_start_x,line_start_y,mouse_x,mouse_y,global.cv_pencil_width,global.cv_color)
+	}
+	
+	draw_set_color(c_black)
+	draw_rectangle(0,0,CW,CH,true)
+	draw_set_color(c_white)
+}
+
+if (clicked_ui) {
+	clicked_ui = false
+	exit
+}
 
 switch (global.selected_tool) {
 	case TOOL.HAND:
@@ -27,7 +46,7 @@ switch (global.selected_tool) {
 			is_drawing = true
 			
 		}
-		if(mouse_check_button_released(mb_left)){
+		if(mouse_check_button_released(mb_left) && is_drawing){
 			is_drawing = false
 			history_write()
 		}	
@@ -60,7 +79,7 @@ switch (global.selected_tool) {
 			is_drawing_line = true
 		}
 	
-		if (mouse_check_button_released(mb_left)) {
+		if (mouse_check_button_released(mb_left) && is_drawing_line) {
 			is_drawing_line = false
 			
 			surface_set_target(global.surf_canvas)
@@ -70,6 +89,8 @@ switch (global.selected_tool) {
 			
 			draw_set_color(c_white)
 			surface_reset_target()
+			
+			history_write()
 		}
 	
 		break
@@ -77,24 +98,12 @@ switch (global.selected_tool) {
 	case TOOL.FILL:
 	
 		if (mouse_check_button_pressed(mb_left)) {
-			cv_scanfill(mouse_x,mouse_y,c_fuchsia)
+			cv_scanfill(mouse_x,mouse_y,global.cv_color)
 			draw_set_color(c_white)
+			history_write()
 		}
 	
 		break;
 }
 
-if(surface_exists(global.surf_canvas)){
-	draw_set_alpha(1)
-	draw_set_color(c_white)
-	draw_surface_ext(global.surf_canvas,0,0, 1, 1, 0, c_white, 1)
-	
-	if (is_drawing_line) {
-		cv_draw_line(line_start_x,line_start_y,mouse_x,mouse_y,global.cv_pencil_width,global.cv_color)
-	}
-	
-	draw_set_color(c_black)
-	draw_rectangle(0,0,CW,CH,true)
-	draw_set_color(c_white)
-}
 

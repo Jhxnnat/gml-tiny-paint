@@ -7,6 +7,11 @@ game_set_speed(30, gamespeed_fps)
 CW = 128
 CH = 128
 
+#macro MX global.__mx__
+#macro MY global.__my__
+MX = 0
+MY = 0
+
 global.surf_canvas = -1
 global.surf_draw = -1
 function canvas_init(){
@@ -23,6 +28,11 @@ function canvas_init(){
 	global.surf_draw = surface_create(CW,CH)
 }
 
+global.cam = view_camera[0]
+function reset_canvas_pos() {
+	camera_set_view_pos(global.cam, 0, 0)
+	global.cv_zoom = 1
+}
 
 //#region tools
 
@@ -30,35 +40,89 @@ enum TOOL {
 	HAND,
 	PENCIL,
 	LINE,
-	FILL 
+	
+	FILL,
+	
+	ACTION
 }
-global.selected_tool = TOOL.LINE;
+global.selected_tool = TOOL.HAND;
 
 global.cv_color = c_orange;
 global.cv_pencil_width = 10;
 global.cv_zoom = 1;
 
-function __Tool(name, tool, sprite = spr_pencil) constructor {
+function brush_set_bigger() {
+	global.cv_pencil_width += 2
+	global.cv_pencil_width = clamp(global.cv_pencil_width, 1, 40)
+}
+
+function brush_set_smaller() {
+	global.cv_pencil_width -= 2
+	global.cv_pencil_width = clamp(global.cv_pencil_width, 1, 40)
+}
+
+/// @desc Function Description
+/// @param {string} name Description
+/// @param {enum.TOOL} tool Description
+/// @param {asset.GMSprite} [sprite]=spr_pencil Description
+/// @param {asset.GMSprite} [cursor]=spr_pencil Description
+/// @param {function} [action]=function(){} Description
+function _tool(name, tool, sprite = spr_pencil, cursor = spr_pencil, action = function(){}) constructor {
 	self.name = name
 	self.tool = tool
 	self.sprite = sprite
-}
-function _tool(name, tool, sprite = spr_pencil) {
-	return new __Tool(name, tool, sprite)
+	self.cursor = cursor
+	self.action = action
 }
 
 global.tool_arr = [
-	_tool("Pencil", TOOL.PENCIL, spr_pencil),
-	_tool("Line", TOOL.LINE, spr_line),
-	_tool("Line", TOOL.LINE, spr_line),
-	_tool("Line", TOOL.LINE, spr_line),
-	_tool("Pencil", TOOL.PENCIL, spr_pencil),
-	_tool("Line", TOOL.LINE, spr_line)
+	new _tool("Pencil", TOOL.PENCIL, spr_pencil, spr_pencil_cur),
+	new _tool("Line", TOOL.LINE, spr_line, spr_line_cur),
+	new _tool("Hand", TOOL.HAND, spr_arrow, spr_arrow_cur),
+	new _tool("Focus", TOOL.ACTION, spr_pencil, 0, function(){
+		reset_canvas_pos()
+	}),
+	new _tool("brush+", TOOL.ACTION, spr_pencil, 0, function(){
+		brush_set_bigger()
+	}),
+	new _tool("brush-", TOOL.ACTION, spr_pencil, 0, function(){
+		brush_set_smaller()
+	}),
 ]
 
 /// Colors
 
-global.colors = [c_red, c_yellow, c_green, c_white, c_blue, c_orange, c_lime, c_fuchsia, c_teal]
+global.colors = []
+array_push(global.colors, #282828)
+array_push(global.colors, #cc241d)
+array_push(global.colors, #98971a)
+
+array_push(global.colors, #928374)
+array_push(global.colors, #fb4934)
+array_push(global.colors, #b8bb26)
+
+array_push(global.colors, #d79921)
+array_push(global.colors, #458588)
+array_push(global.colors, #b16286)
+
+array_push(global.colors, #fabd2f)
+array_push(global.colors, #83a598)
+array_push(global.colors, #d8369b)
+
+array_push(global.colors, #689d6a)
+array_push(global.colors, #a89984)
+array_push(global.colors, #d65d0e)
+
+array_push(global.colors, #8ec07c)
+array_push(global.colors, #ebdbb2)
+array_push(global.colors, #fe8019)
+
+array_push(global.colors, #282828)
+array_push(global.colors, #504945)
+array_push(global.colors, #928374)
+
+array_push(global.colors, #d5c4a1)
+array_push(global.colors, #fbf1c7)
 
 /// Draw func
 
