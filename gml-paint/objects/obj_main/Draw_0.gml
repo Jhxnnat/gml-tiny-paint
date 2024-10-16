@@ -2,16 +2,16 @@
 
 if(surface_exists(global.surf_canvas)){
 	draw_set_alpha(1)
+	draw_set_color(c_black)
+	draw_rectangle(-1,-1,CW,CH,false)
 	draw_set_color(c_white)
+	draw_rectangle(0,0,CW-1,CH-1,false)
+	
 	draw_surface_ext(global.surf_canvas,0,0, 1, 1, 0, c_white, 1)
 	
 	if (is_drawing_line) {
 		cv_draw_line(line_start_x,line_start_y,mouse_x,mouse_y,global.cv_pencil_width,global.cv_color)
 	}
-	
-	draw_set_color(c_black)
-	draw_rectangle(0,0,CW,CH,true)
-	draw_set_color(c_white)
 }
 
 if (clicked_ui) {
@@ -98,9 +98,10 @@ switch (global.selected_tool) {
 	case TOOL.FILL:
 	
 		if (mouse_check_button_pressed(mb_left)) {
-			cv_scanfill(mouse_x,mouse_y,global.cv_color)
 			draw_set_color(c_white)
-			history_write()
+			cv_floodfill(mouse_x,mouse_y,global.cv_color)
+			//instance_create_depth(mouse_x,mouse_y,0,obj_fill)
+			//history_write()
 		}
 	
 		break;

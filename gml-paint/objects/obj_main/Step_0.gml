@@ -46,6 +46,6 @@ keyboard_lastkey = -1
 
 var _guimx = window_mouse_get_x()
 var _guimy = window_mouse_get_y()
-if (mouse_check_button_pressed(mb_left) and point_in_rectangle(_guimx, _guimy, ui_coord[0]*2, ui_coord[1]*2, ui_coord[2]*2, ui_coord[3]*2)) {
+if (mouse_check_button(mb_left) and point_in_rectangle(_guimx, _guimy, ui_coord[0]*2, ui_coord[1]*2, ui_coord[2]*2, ui_coord[3]*2)) {
 	clicked_ui = true
 }

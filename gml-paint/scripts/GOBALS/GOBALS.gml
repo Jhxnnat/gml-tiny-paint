@@ -4,8 +4,8 @@ game_set_speed(30, gamespeed_fps)
 #macro WINDOW_H 560 
 #macro CW global.__cw__
 #macro CH global.__ch__
-CW = 128
-CH = 128
+CW = 512
+CH = 512
 
 #macro MX global.__mx__
 #macro MY global.__my__
@@ -30,8 +30,9 @@ function canvas_init(){
 
 global.cam = view_camera[0]
 function reset_canvas_pos() {
-	camera_set_view_pos(global.cam, 0, 0)
 	global.cv_zoom = 1
+	camera_set_view_size(global.cam,WINDOW_W*global.cv_zoom,WINDOW_H*global.cv_zoom)
+	camera_set_view_pos(global.cam, -room_width/2+CW, -room_height/2+CH)
 }
 
 //#region tools
@@ -50,15 +51,17 @@ global.selected_tool = TOOL.HAND;
 global.cv_color = c_orange;
 global.cv_pencil_width = 10;
 global.cv_zoom = 1;
+globalvar cursor;
+cursor = spr_arrow_cur
 
 function brush_set_bigger() {
 	global.cv_pencil_width += 2
-	global.cv_pencil_width = clamp(global.cv_pencil_width, 1, 40)
+	global.cv_pencil_width = clamp(global.cv_pencil_width, 2, 40)
 }
 
 function brush_set_smaller() {
 	global.cv_pencil_width -= 2
-	global.cv_pencil_width = clamp(global.cv_pencil_width, 1, 40)
+	global.cv_pencil_width = clamp(global.cv_pencil_width, 2, 40)
 }
 
 /// @desc Function Description
@@ -79,14 +82,19 @@ global.tool_arr = [
 	new _tool("Pencil", TOOL.PENCIL, spr_pencil, spr_pencil_cur),
 	new _tool("Line", TOOL.LINE, spr_line, spr_line_cur),
 	new _tool("Hand", TOOL.HAND, spr_arrow, spr_arrow_cur),
-	new _tool("Focus", TOOL.ACTION, spr_pencil, 0, function(){
-		reset_canvas_pos()
+	new _tool("Eraser", TOOL.ACTION, spr_eraser, spr_eraser_cur, function(){
+		global.cv_color = #ffffff
+		global.selected_tool = TOOL.PENCIL
+		cursor = spr_eraser_cur
 	}),
-	new _tool("brush+", TOOL.ACTION, spr_pencil, 0, function(){
+	new _tool("brush+", TOOL.ACTION, spr_bursh_inc, 0, function(){
 		brush_set_bigger()
 	}),
-	new _tool("brush-", TOOL.ACTION, spr_pencil, 0, function(){
+	new _tool("brush-", TOOL.ACTION, spr_bursh_dec, 0, function(){
 		brush_set_smaller()
+	}),
+	new _tool("Focus", TOOL.ACTION, spr_focus, 0, function(){
+		reset_canvas_pos()
 	}),
 ]
 
@@ -201,44 +209,23 @@ function cv_draw_line_v(x1,y1,x2,y2,width=10,color=c_red) {
 	}
 }
 
-function cv_fill(_x,_y,color=c_red) {
-	var _prev_color = surface_getpixel(global.surf_canvas,_x,_y);
-	if (_prev_color = color) return;
-	
-	surface_set_target(global.surf_canvas)
-	draw_set_color(color)
-	//??¡
-	surface_reset_target()
-	draw_set_color(c_white)
-}
-function __ffill(_x,_y,_w,_h,_prev_color,_new_color) {
-	if (surface_getpixel(global.surf_canvas,_x,_y) != _prev_color) return;
-	
-	print("ffil draw point")
-	draw_point(_x,_y)
-	
-	//if (_x - 1 >= 0) __ffill(_x-1,_y,_w,_h,_prev_color,_new_color);
-	//if (_y + 1 < _h) __ffill(_x,_y+1,_w,_h,_prev_color,_new_color);
-	//if (_x + 1 < _w) __ffill(_x+1,_y,_w,_h,_prev_color,_new_color);
-	//if (_y - 1 >= 0) __ffill(_x,_y-1,_w,_h,_prev_color,_new_color);
-}
-
-function cv_scanfill(_x,_y,color=c_red){
+function cv_floodfill(_x,_y,color=c_red){
 	if (!__inside(_x,_y)) return;
+	
+	var _prev_color = surface_getpixel(global.surf_canvas,_x,_y)
+	if (_prev_color = color) return
 	
 	var _getcolor = draw_get_color()
 	draw_set_color(color)
 	surface_set_target(global.surf_canvas)
 	
-	var _prev_color = surface_getpixel(global.surf_canvas,_x,_y)
-	if (_prev_color = color) return
+	var _s = ds_queue_create()
+	ds_queue_enqueue(_s, [_x,_y])
 	
-	var _s = ds_stack_create()
-	ds_stack_push(_s, [_x,_y])
-	
-	while (ds_stack_size(_s) > 0) {
+	var _t = current_time
+	while (ds_queue_size(_s) > 0) {
 		
-		var __temp = ds_stack_pop(_s)
+		var __temp = ds_queue_dequeue(_s)
 		var _curx = __temp[0]
 		var _cury = __temp[1]
 		
@@ -247,23 +234,22 @@ function cv_scanfill(_x,_y,color=c_red){
 			
 			draw_point(_curx, _cury)
 			
-			ds_stack_push(_s, [_curx + 1, _cury])
-			ds_stack_push(_s, [_curx - 1, _cury])
-			ds_stack_push(_s, [_curx, _cury + 1])
-			ds_stack_push(_s, [_curx, _cury - 1])
-			
+			ds_queue_enqueue(_s, [_curx + 1, _cury])
+			ds_queue_enqueue(_s, [_curx - 1, _cury])
+			ds_queue_enqueue(_s, [_curx, _cury + 1])
+			ds_queue_enqueue(_s, [_curx, _cury - 1])
 		}
-		
 	}
+	print($"t: {(current_time - _t)} seconds") 
 	
-	ds_stack_destroy(_s)
+	ds_queue_destroy(_s)
 	
 	draw_set_color(_getcolor)
 	surface_reset_target()
 }
 function __inside(_x,_y) {
-	if (_x > CW or _x < 0) return false;
-	if (_y > CH or _y < 0) return false;
+	if (_x >= CW or _x < 0) return false;
+	if (_y >= CH or _y < 0) return false;
 		
 	return true
 }
@@ -299,7 +285,6 @@ function history_write() {
 function history_undo() {
 	var _len = array_length(global.undo)
 	if (_len > 2) { 
-		
 		var __rlen = array_length(global.redo)
 		surface_copy(global.redo[__rlen-1], 0, 0, global.surf_canvas)
 		array_push(global.redo, surface_create(CW,CH))
@@ -308,8 +293,13 @@ function history_undo() {
 		array_pop(global.undo)
 		
 	} else if (_len > 1) {
+		var __rlen = array_length(global.redo)
+		surface_copy(global.redo[__rlen-1], 0, 0, global.surf_canvas)
+		array_push(global.redo, surface_create(CW,CH))
+		
 		surface_free(global.surf_canvas)
 		global.surf_canvas = surface_create(CW,CH)
+		
 		array_pop(global.undo)
 	}
 	print("Undo: ", global.undo)
@@ -337,3 +327,4 @@ function history_redo() { //TODO: check memory, use surface free
 	print("\nRedo: ", global.redo)
 	print("\n")
 }
+
