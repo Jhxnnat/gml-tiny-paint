@@ -1,2 +1,2 @@
-# gml-ms-paint
- ms paint clone 
+# gml-ms-painter
+mini draw app
